@@ -5,7 +5,7 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES')
      }
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('atem-dockerhub')
+    DOCKERHUB_CREDENTIALS = credentials('atem-dockerhub2')
     APP_NAME = "atem"
     }
     stages { 
