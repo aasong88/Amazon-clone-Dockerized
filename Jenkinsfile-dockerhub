@@ -6,7 +6,7 @@ pipeline {
      }
     environment {
     DOCKERHUB_CREDENTIALS = credentials('atem-dockerhub2')
-    APP_NAME = "atem"
+    APP_NAME = "atemnkeng01/atem"
     }
     stages { 
         stage('SCM Checkout') {
