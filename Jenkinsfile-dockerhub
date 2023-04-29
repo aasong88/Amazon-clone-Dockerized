@@ -5,7 +5,7 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES')
      }
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('atemnkeng01')
+    DOCKERHUB_CREDENTIALS = credentials('atemnkeng01/atem')
     APP_NAME = "atemnkeng01/atem"
     }
     stages { 
