@@ -5,13 +5,13 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES')
      }
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('karo-dockerhub')
+    DOCKERHUB_CREDENTIALS = credentials('atem-dockerhub')
     APP_NAME = "atemnkeng01/atem"
     }
     stages { 
         stage('SCM Checkout') {
             steps{
-           git branch: 'main', url: 'https://github.com/ooghenekaro/Amazon-clone-Dockerized.git'
+           git branch: 'main', url: 'https://github.com/aasong88/Amazon-clone-Dockerized.git'
             }
         }
         // run sonarqube test
@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Trivy Scan (Aqua)') {
             steps {
-                sh 'trivy image --format template --output trivy_report.html ooghenekaro/amazon:latest'
+                sh 'trivy image --format template --output trivy_report.html atemnkeng01/atem'
             }
        }
         stage('push image') {
