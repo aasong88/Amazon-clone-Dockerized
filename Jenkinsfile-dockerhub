@@ -5,13 +5,24 @@ pipeline {
         timeout(time: 10, unit: 'MINUTES')
      }
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('atem-dockerhub2')
+    DOCKERHUB_CREDENTIALS = credentials('karo-dockerhub')
     APP_NAME = "atemnkeng01/atem"
     }
     stages { 
         stage('SCM Checkout') {
             steps{
-           git branch: 'main', url: 'https://github.com/aasong88/Amazon-clone-Dockerized.git'
+           git branch: 'main', url: 'https://github.com/ooghenekaro/Amazon-clone-Dockerized.git'
+            }
+        }
+        // run sonarqube test
+        stage('Run Sonarqube') {
+            environment {
+                scannerHome = tool 'ibt-sonarqube';
+            }
+            steps {
+              withSonarQubeEnv(credentialsId: 'ibt-sonar', installationName: 'IBT sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+              }
             }
         }
 
@@ -25,6 +36,11 @@ pipeline {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
+        stage('Trivy Scan (Aqua)') {
+            steps {
+                sh 'trivy image --format template --output trivy_report.html ooghenekaro/amazon:latest'
+            }
+       }
         stage('push image') {
             steps{
                 sh 'docker push $APP_NAME:$BUILD_NUMBER'
@@ -32,10 +48,9 @@ pipeline {
         }
         stage('Trigger ManifestUpdate') {
              steps{
-                build job: 'argocd-manifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]     
+                build job: 'argocd-manifest-amazon', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]     
 
             } 
         }      
     }
 }
-
